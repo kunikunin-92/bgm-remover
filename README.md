@@ -1,80 +1,79 @@
 # BGM Remover
 
-動画ファイルからBGM（背景音楽）を自動除去し、ボーカルや効果音のみの映像を出力するGUIツールです。
+A GUI tool that automatically removes background music from video files, leaving only vocals and sound effects.
 
-## 機能
+## Features
 
-- 動画ファイルからBGMを除去してボーカル・効果音のみの映像を出力
-- GPU / CPU の切り替えによる処理速度の最適化
-- 複数ファイルの一括処理（サブフォルダも再帰的にスキャン）
-- 5種類のAI分離モデルから選択可能
-- 起動時に `audio-separator` の最新バージョンを自動チェック
+- Remove BGM from video files using AI-based audio separation
+- GPU / CPU toggle for faster processing when an NVIDIA GPU is available
+- Batch processing — add individual files or entire folders (subfolders are scanned recursively)
+- Five AI separation models to choose from
+- Checks for `audio-separator` updates on launch and lets you update in-app
+- **Auto-installs ffmpeg on first launch** if it is not found on your system
 
-## 対応形式
+## Supported formats
 
 `.mp4` / `.mkv` / `.avi` / `.mov`
 
-## 使用モデル
+## Available models
 
-| モデル名 | 備考 |
+| Model | Notes |
 |---|---|
-| `UVR-MDX-NET-Inst_HQ_3.onnx` | デフォルト・高品質 |
+| `UVR-MDX-NET-Inst_HQ_3.onnx` | Default — high quality |
 | `UVR-MDX-NET-Inst_Main.onnx` | |
 | `UVR_MDXNET_Main.onnx` | |
-| `UVR_MDXNET_KARA_2.onnx` | カラオケ向け |
+| `UVR_MDXNET_KARA_2.onnx` | Optimised for karaoke tracks |
 | `Kim_Inst.onnx` | |
 
-## 処理フロー
+## Processing pipeline
 
-1. 動画から音声を抽出（WAV形式）
-2. AIモデルでBGMと音声を分離（audio-separator）
-3. ffmpegの`amix`フィルタでBGMを減算
-4. 分離した音声と映像を再合成（AAC 192kbps）
-5. 出力ファイル名: `{元ファイル名}_nobgm.mp4`
+1. Extract audio from video (WAV)
+2. Separate BGM from audio using the selected AI model (audio-separator)
+3. Subtract BGM via ffmpeg `amix` filter
+4. Mux the cleaned audio back into the video (AAC 192 kbps)
+5. Output filename: `{original_name}_nobgm.mp4`
 
-## 起動方法
+## Getting started
 
-`run_bgm_remover.bat` をダブルクリックするだけで起動できます。
+Double-click `run_bgm_remover.bat` to launch.
 
-初回起動時に以下を自動で行います:
+On the first run it will automatically:
 
-- Python 仮想環境（venv）の作成
-- 依存ライブラリの自動インストール
-- NVIDIA GPU の自動検出と CUDA 対応ランタイムのインストール
+- Create a Python virtual environment (`venv`)
+- Install all required libraries
+- Detect your NVIDIA GPU and install the CUDA runtime if available
+- Download and install ffmpeg if it is not already on your system
 
 ```
 run_bgm_remover.bat
 ```
 
-## 必要な環境
+## Requirements
 
-- Python 3.10 以上
-- ffmpeg（PATH に登録済みであること）
-- NVIDIA GPU（オプション・CPU でも動作可）
+- Python 3.10 or later
+- NVIDIA GPU (optional — CPU mode is also supported)
 
-### ffmpeg のインストール
+> **Note:** ffmpeg is installed automatically on first launch. You do not need to install it manually.
 
-[ffmpeg 公式サイト](https://ffmpeg.org/download.html) からダウンロードし、実行ファイルのあるディレクトリを環境変数 `PATH` に追加してください。
-
-## ファイル構成
+## File structure
 
 ```
 BGM_Remover/
-├── main.py               # エントリポイント
-├── gui.py                # GUIメインクラス（customtkinter）
-├── separator.py          # BGM分離ロジック
-├── ffmpeg_utils.py       # ffmpeg操作ユーティリティ
-├── requirements.txt      # 依存ライブラリ一覧
-└── run_bgm_remover.bat   # 全自動ランチャー
+├── main.py               # Entry point — dependency check & setup window
+├── gui.py                # Main GUI (customtkinter)
+├── separator.py          # BGM separation logic
+├── ffmpeg_utils.py       # ffmpeg utility functions
+├── requirements.txt      # Python dependencies
+└── run_bgm_remover.bat   # Fully automated launcher
 ```
 
-## 依存ライブラリ
+## Dependencies
 
-- [customtkinter](https://github.com/TomSchimansky/CustomTkinter) - モダンなGUIフレームワーク
-- [ffmpeg-python](https://github.com/kkroening/ffmpeg-python) - ffmpegのPythonバインディング
-- [audio-separator](https://github.com/nomadkaraoke/python-audio-separator) - AIによる音声分離
+- [customtkinter](https://github.com/TomSchimansky/CustomTkinter) — modern GUI framework
+- [ffmpeg-python](https://github.com/kkroening/ffmpeg-python) — Python bindings for ffmpeg
+- [audio-separator](https://github.com/nomadkaraoke/python-audio-separator) — AI-based audio source separation
 
-## 手動インストール
+## Manual installation
 
 ```bash
 python -m venv venv
@@ -83,7 +82,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-GPU（CUDA）を使用する場合は、追加で以下を実行してください:
+To use GPU (CUDA), also run:
 
 ```bash
 pip install audio-separator[gpu]
