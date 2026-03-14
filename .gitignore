@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build/cache artifacts
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+
+# Local outputs
+output/
+models/*.onnx
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
